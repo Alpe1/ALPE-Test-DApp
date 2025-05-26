@@ -77,7 +77,7 @@
     <input type="number" id="amountBurn" placeholder="Menge zum Burnen" />
     <button onclick="burnToken()">🔥 ALPE burnen</button>
 
-    <button onclick="claimToken()">🎁 Test-Airdrop (Claim ALPE)</button>
+    <button onclick="claimToken()">🎁 Claim ALPE (einmalig)</button>
 
     <p id="status"></p>
   </div>
@@ -94,7 +94,7 @@
       "function balanceOf(address) view returns (uint256)",
       "function transfer(address to, uint256 amount) returns (bool)",
       "function burn(uint256 amount)",
-      "function mint(address to, uint256 amount)",
+      "function claim()",
       "function decimals() view returns (uint8)"
     ];
 
@@ -139,12 +139,15 @@
     }
 
     async function claimToken() {
-      const addr = await signer.getAddress();
-      const tx = await contract.mint(addr, ethers.utils.parseUnits("1000", 18));
-      document.getElementById("status").innerText = "🎁 Claim läuft...";
-      await tx.wait();
-      document.getElementById("status").innerText = "✅ 1000 ALPE erhalten.";
-      getBalance();
+      try {
+        const tx = await contract.claim();
+        document.getElementById("status").innerText = "🎁 Claim läuft...";
+        await tx.wait();
+        document.getElementById("status").innerText = "✅ ALPE erfolgreich geclaimt.";
+        getBalance();
+      } catch (error) {
+        document.getElementById("status").innerText = "⚠️ Du hast bereits geclaimt oder es gab einen Fehler.";
+      }
     }
   </script>
 </body>

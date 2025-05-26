@@ -20,8 +20,7 @@
       margin: auto;
       box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     }
-    input,
-    button {
+    input, button {
       margin-top: 10px;
       padding: 10px;
       width: 100%;
@@ -78,7 +77,6 @@
     <button onclick="burnToken()">🔥 ALPE burnen</button>
 
     <button onclick="claimToken()">🎁 Claim ALPE (einmalig)</button>
-
     <p id="status"></p>
   </div>
 
@@ -94,11 +92,11 @@
       "function balanceOf(address) view returns (uint256)",
       "function transfer(address to, uint256 amount) returns (bool)",
       "function burn(uint256 amount)",
-      "function claim()",
+      "function mint(address to, uint256 amount)",
       "function decimals() view returns (uint8)"
     ];
 
-    let signer, contract;
+    let signer, contract, hasClaimed = false;
 
     async function connectWallet() {
       if (!window.ethereum) return alert("Bitte MetaMask installieren.");
@@ -139,13 +137,19 @@
     }
 
     async function claimToken() {
+      if (hasClaimed) {
+        document.getElementById("status").innerText = "⚠️ Du hast bereits geclaimt oder es gab einen Fehler.";
+        return;
+      }
       try {
-        const tx = await contract.claim();
+        const addr = await signer.getAddress();
+        const tx = await contract.mint(addr, ethers.utils.parseUnits("1000", 18));
         document.getElementById("status").innerText = "🎁 Claim läuft...";
         await tx.wait();
-        document.getElementById("status").innerText = "✅ ALPE erfolgreich geclaimt.";
+        document.getElementById("status").innerText = "✅ 1000 ALPE erhalten.";
+        hasClaimed = true;
         getBalance();
-      } catch (error) {
+      } catch (err) {
         document.getElementById("status").innerText = "⚠️ Du hast bereits geclaimt oder es gab einen Fehler.";
       }
     }

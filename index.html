@@ -12,7 +12,6 @@
       padding: 20px;
       text-align: center;
     }
-
     .container {
       background: white;
       padding: 25px;
@@ -21,46 +20,41 @@
       margin: auto;
       box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     }
-
     input,
     button {
       margin-top: 10px;
       padding: 10px;
-      width: 90%;
+      width: 100%;
       font-size: 16px;
+      box-sizing: border-box;
     }
-
     button {
       background: #007844;
       color: white;
       border: none;
       border-radius: 5px;
     }
-
     button:hover {
       background: #005f33;
     }
-
     #status {
       margin-top: 15px;
       font-weight: bold;
       color: #333;
     }
-
     footer {
-      margin-top: 30px;
-      font-size: 13px;
-      color: #666;
+      background: #f0f0f0;
+      padding: 10px;
+      font-size: 14px;
+      text-align: center;
+      color: #333;
+      border-top: 1px solid #ddd;
+      margin-top: 20px;
     }
-
     footer a {
-      color: #666;
+      color: #007844;
       text-decoration: none;
-      margin: 0 10px;
-    }
-
-    footer a:hover {
-      text-decoration: underline;
+      margin: 0 8px;
     }
   </style>
 </head>
@@ -89,6 +83,7 @@
   </div>
 
   <footer>
+    <a href="https://github.com/Alpe1/ALPE-Test-DApp" target="_blank">GitHub Repository</a> |
     <a href="https://alpencoinat.wixsite.com/alpencoin/datenschutz" target="_blank">Datenschutz</a> |
     <a href="https://alpencoinat.wixsite.com/alpencoin/impressum" target="_blank">Impressum</a>
   </footer>
@@ -119,8 +114,7 @@
       const addr = await signer.getAddress();
       const decimals = await contract.decimals();
       const bal = await contract.balanceOf(addr);
-      document.getElementById("balance").innerText =
-        `Dein ALPE-Guthaben: ${ethers.utils.formatUnits(bal, decimals)}`;
+      document.getElementById("balance").innerText = `Dein ALPE-Guthaben: ${ethers.utils.formatUnits(bal, decimals)}`;
     }
 
     async function sendToken() {

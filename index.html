@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALPE Test DApp</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body { font-family: Arial; background: #f9f9f9; padding: 20px; text-align: center; }
+    .container { background: white; padding: 25px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
+    input, button { margin-top: 10px; padding: 10px; width: 90%; font-size: 16px; }
+    button { background: #007844; color: white; border: none; border-radius: 5px; }
+    button:hover { background: #005f33; }
+    #status { margin-top: 15px; font-weight: bold; color: #333; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🧪 ALPE Test DApp (Sepolia)</h2>
+
+    <button onclick="connectWallet()">🔗 MetaMask verbinden</button>
+    <p id="wallet"></p>
+
+    <hr />
+
+    <button onclick="getBalance()">📦 ALPE-Balance anzeigen</button>
+    <p id="balance"></p>
+
+    <input type="text" id="recipient" placeholder="Empfängeradresse eingeben" />
+    <input type="number" id="amountSend" placeholder="Menge zum Senden" />
+    <button onclick="sendToken()">📤 ALPE senden</button>
+
+    <input type="number" id="amountBurn" placeholder="Menge zum Burnen" />
+    <button onclick="burnToken()">🔥 ALPE burnen</button>
+
+    <button onclick="claimToken()">🎁 Test-Airdrop (Claim ALPE)</button>
+
+    <p id="status"></p>
+  </div>
+
+  <script>
+    const tokenAddress = "0xed1EAb121847fcc90F2cb4aC047eC422aE940C80"; // z. B. 0x123...abc (Vertragsadresse, nicht Wallet!)
+    const abi = [
+      "function balanceOf(address) view returns (uint256)",
+      "function transfer(address to, uint256 amount) returns (bool)",
+      "function burn(uint256 amount)",
+      "function mint(address to, uint256 amount)",
+      "function decimals() view returns (uint8)"
+    ];
+
+    let signer, contract;
+
+    async function connectWallet() {
+      if (!window.ethereum) return alert("Bitte MetaMask installieren.");
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      await provider.send("eth_requestAccounts", []);
+      signer = provider.getSigner();
+      contract = new ethers.Contract(tokenAddress, abi, signer);
+      const addr = await signer.getAddress();
+      document.getElementById("wallet").innerText = "✅ Verbunden: " + addr;
+    }
+
+    async function getBalance() {
+      const addr = await signer.getAddress();
+      const decimals = await contract.decimals();
+      const bal = await contract.balanceOf(addr);
+      document.getElementById("balance").innerText = `Dein ALPE-Guthaben: ${ethers.utils.formatUnits(bal, decimals)}`;
+    }
+
+    async function sendToken() {
+      const to = document.getElementById("recipient").value;
+      const amt = document.getElementById("amountSend").value;
+      const decimals = await contract.decimals();
+      const tx = await contract.transfer(to, ethers.utils.parseUnits(amt, decimals));
+      document.getElementById("status").innerText = "⏳ Sende ALPE...";
+      await tx.wait();
+      document.getElementById("status").innerText = "✅ Gesendet.";
+      getBalance();
+    }
+
+    async function burnToken() {
+      const amt = document.getElementById("amountBurn").value;
+      const decimals = await contract.decimals();
+      const tx = await contract.burn(ethers.utils.parseUnits(amt, decimals));
+      document.getElementById("status").innerText = "⏳ Burning...";
+      await tx.wait();
+      document.getElementById("status").innerText = "🔥 Token geburnt.";
+      getBalance();
+    }
+
+    async function claimToken() {
+      const addr = await signer.getAddress();
+      const tx = await contract.mint(addr, ethers.utils.parseUnits("1000", 18));
+      document.getElementById("status").innerText = "🎁 Claim läuft...";
+      await tx.wait();
+      document.getElementById("status").innerText = "✅ 1000 ALPE erhalten.";
+      getBalance();
+    }
+  </script>
+</body>
+</html>

@@ -6,12 +6,62 @@
   <title>ALPE Test DApp</title>
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <style>
-    body { font-family: Arial; background: #f9f9f9; padding: 20px; text-align: center; }
-    .container { background: white; padding: 25px; border-radius: 10px; max-width: 500px; margin: auto; box-shadow: 0 0 8px rgba(0,0,0,0.1); }
-    input, button { margin-top: 10px; padding: 10px; width: 90%; font-size: 16px; }
-    button { background: #007844; color: white; border: none; border-radius: 5px; }
-    button:hover { background: #005f33; }
-    #status { margin-top: 15px; font-weight: bold; color: #333; }
+    body {
+      font-family: Arial;
+      background: #f9f9f9;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    input,
+    button {
+      margin-top: 10px;
+      padding: 10px;
+      width: 90%;
+      font-size: 16px;
+    }
+
+    button {
+      background: #007844;
+      color: white;
+      border: none;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: #005f33;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    footer {
+      margin-top: 30px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    footer a {
+      color: #666;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
@@ -38,8 +88,13 @@
     <p id="status"></p>
   </div>
 
+  <footer>
+    <a href="https://deine-domain.xyz/datenschutz" target="_blank">Datenschutz</a> |
+    <a href="https://deine-domain.xyz/impressum" target="_blank">Impressum</a>
+  </footer>
+
   <script>
-    const tokenAddress = "0xed1EAb121847fcc90F2cb4aC047eC422aE940C80"; // z. B. 0x123...abc (Vertragsadresse, nicht Wallet!)
+    const tokenAddress = "0xed1EAb121847fcc90F2cb4aC047eC422aE940C80";
     const abi = [
       "function balanceOf(address) view returns (uint256)",
       "function transfer(address to, uint256 amount) returns (bool)",
@@ -64,7 +119,8 @@
       const addr = await signer.getAddress();
       const decimals = await contract.decimals();
       const bal = await contract.balanceOf(addr);
-      document.getElementById("balance").innerText = `Dein ALPE-Guthaben: ${ethers.utils.formatUnits(bal, decimals)}`;
+      document.getElementById("balance").innerText =
+        `Dein ALPE-Guthaben: ${ethers.utils.formatUnits(bal, decimals)}`;
     }
 
     async function sendToken() {

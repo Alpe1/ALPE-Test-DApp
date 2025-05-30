@@ -25,7 +25,7 @@ ALPE-Testtoken deployed auf Sepolia (mit mint- und burn-Funktion)
 
 Token-Adresse:
 
-0xed1EAb121847fcc90F2cb4aC047eC422aE940C80
+0xCCDBECc374291bbCDC4388f5Ed3a281824a26937
 
 📂 Dateien
 
